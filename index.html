@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventGhana - Religious Events Platform</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #7c3aed;
+            --success-color: #059669;
+            --warning-color: #d97706;
+            --danger-color: #dc2626;
+            --dark-color: #1f2937;
+            --light-color: #f9fafb;
+            --border-color: #e5e7eb;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header Styles */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-decoration: none;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary-color);
+            border: 1.5px solid var(--primary-color);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-secondary);
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 4rem 0 6rem;
+            text-align: center;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Main Content */
+        .main-wrapper {
+            background: white;
+            margin: -3rem 1rem 2rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .tab-navigation {
+            display: flex;
+            background: var(--light-color);
+            border-bottom: 1px solid var(--border-color);
+            overflow-x: auto;
+        }
+
+        .tab-nav-btn {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            position: relative;
+        }
+
+        .tab-nav-btn.active {
+            color: var(--primary-color);
+            background: white;
+        }
+
+        .tab-nav-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .tab-content {
+            display: none;
+            padding: 2rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Events Grid */
+        .events-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .event-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .event-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+            border-color: var(--primary-color);
+        }
+
+        .event-image {
+            height: 180px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .event-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        }
+
+        .event-content {
+            padding: 1.5rem;
+        }
+
+        .event-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+            line-height: 1.3;
+        }
+
+        .event-meta {
+            display: grid;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .event-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .event-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .event-price {
+            font-weight: 700;
+            color: var(--success-color);
+            font-size: 1.125rem;
+        }
+
+        .event-capacity {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Forms */
+        .form-section {
+            background: var(--light-color);
+            padding: 2rem;
+            border-radius: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+            background: white;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        /* Ticket Options */
+        .ticket-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .ticket-option {
+            padding: 1.5rem;
+            border: 2px solid var(--border-color);
+            border-radius: 0.75rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .ticket-option:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .ticket-option.selected {
+            border-color: var(--primary-color);
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .ticket-option h4 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .ticket-option p {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Dashboard */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .dashboard-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            transition: transform 0.2s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .dashboard-card h3 {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+
+        .dashboard-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.show .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.25rem;
+            transition: background-color 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--light-color);
+        }
+
+        /* Payment Methods */
+        .payment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .payment-option {
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 0.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .payment-option:hover {
+            border-color: var(--primary-color);
+        }
+
+        .payment-option.selected {
+            border-color: var(--primary-color);
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .payment-logo {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* QR Code */
+        .qr-container {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            background: var(--light-color);
+            border: 2px dashed var(--border-color);
+            margin: 1rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .ticket-info {
+            background: var(--light-color);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin: 1.5rem 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 0.75rem;
+            }
+
+            .header-content {
+                padding: 0.75rem 0;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            .hero {
+                padding: 2rem 0 4rem;
+            }
+
+            .main-wrapper {
+                margin: -2rem 0.5rem 1rem;
+                border-radius: 1rem;
+            }
+
+            .tab-content {
+                padding: 1.5rem;
+            }
+
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .hero-cta {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ticket-options,
+            .payment-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Utility Classes */
+        .hidden { display: none !important; }
+        .text-center { text-align: center; }
+        .text-primary { color: var(--primary-color); }
+        .text-secondary { color: var(--text-secondary); }
+        .mb-0 { margin-bottom: 0; }
+        .mb-1 { margin-bottom: 0.5rem; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mt-2 { margin-top: 1rem; }
+        .w-full { width: 100%; }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo">EventGhana</a>
+                <nav class="nav-menu">
+                    <button class="btn btn-ghost" onclick="switchTab('browse')">Browse Events</button>
+                    <button class="btn btn-ghost" onclick="switchTab('create')">Create Event</button>
+                    <button class="btn btn-primary" onclick="switchTab('dashboard')">Dashboard</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Transform Your Religious Events</h1>
+            <p class="hero-subtitle">
+                The most trusted platform for churches and religious organizations across Ghana to manage events, registrations, and connect with their communities.
+            </p>
+            <div class="hero-cta">
+                <button class="btn btn-primary" onclick="switchTab('browse')">
+                    Find Events Near You
+                </button>
+                <button class="btn btn-secondary" onclick="switchTab('create')">
+                    Create Your Event
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-wrapper">
+            <!-- Tab Navigation -->
+            <div class="tab-navigation">
+                <button class="tab-nav-btn active" onclick="switchTab('browse')" data-tab="browse">
+                    Browse Events
+                </button>
+                <button class="tab-nav-btn" onclick="switchTab('create')" data-tab="create">
+                    Create Event
+                </button>
+                <button class="tab-nav-btn" onclick="switchTab('dashboard')" data-tab="dashboard">
+                    Dashboard
+                </button>
+            </div>
+
+            <!-- Browse Events Tab -->
+            <div class="tab-content active" id="tab-browse">
+                <div class="events-header">
+                    <h2>Upcoming Religious Events</h2>
+                    <select class="form-control" style="width: auto; min-width: 150px;" onchange="filterEvents(this.value)">
+                        <option value="all">All Events</option>
+                        <option value="service">Services</option>
+                        <option value="conference">Conferences</option>
+                        <option value="concert">Concerts</option>
+                        <option value="crusade">Crusades</option>
+                        <option value="prayer">Prayers</option>
+                        <option value="youth">Youth Events</option>
+                    </select>
+                </div>
+                <div class="events-grid" id="eventsContainer">
+                    <!-- Events will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Create Event Tab -->
+            <div class="tab-content" id="tab-create">
+                <h2>Create New Religious Event</h2>
+                <form class="form-section" onsubmit="handleEventCreation(event)">
+                    <div class="form-group">
+                        <label class="form-label" for="eventTitle">Event Title *</label>
+                        <input type="text" id="eventTitle" class="form-control" required 
+                               placeholder="e.g., Sunday Worship Service, Faith Conference">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="eventDate">Date *</label>
+                            <input type="date" id="eventDate" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="eventTime">Time *</label>
+                            <input type="time" id="eventTime" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="eventLocation">Location *</label>
+                        <input type="text" id="eventLocation" class="form-control" required 
+                               placeholder="Church name and full address">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="eventDescription">Event Description</label>
+                        <textarea id="eventDescription" class="form-control" rows="4" 
+                                  placeholder="Describe what attendees can expect..."></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="eventCapacity">Expected Attendance *</label>
+                            <input type="number" id="eventCapacity" class="form-control" required 
+                                   placeholder="100" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="eventType">Event Type *</label>
+                            <select id="eventType" class="form-control" required>
+                                <option value="">Select Event Type</option>
+                                <option value="service">Regular Service</option>
+                                <option value="conference">Conference/Seminar</option>
+                                <option value="crusade">Crusade/Revival</option>
+                                <option value="concert">Gospel Concert</option>
+                                <option value="prayer">Prayer Meeting</option>
+                                <option value="youth">Youth Event</option>
+                                <option value="wedding">Wedding</option>
+                                <option value="funeral">Memorial Service</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Registration Type *</label>
+                        <div class="ticket-options">
+                            <div class="ticket-option" onclick="selectTicketType('free')" data-type="free">
+                                <h4>Free Event</h4>
+                                <p>No cost registration</p>
+                            </div>
+                            <div class="ticket-option" onclick="selectTicketType('donation')" data-type="donation">
+                                <h4>Donation Based</h4>
+                                <p>Optional contributions welcome</p>
+                            </div>
+                            <div class="ticket-option" onclick="selectTicketType('paid')" data-type="paid">
+                                <h4>Paid Event</h4>
+                                <p>Fixed ticket price</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group hidden" id="pricingDetails">
+                        <label class="form-label" for="ticketPrice">Ticket Price (GHS) *</label>
+                        <input type="number" id="ticketPrice" class="form-control" 
+                               placeholder="0.00" step="0.01" min="0">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-full">
+                        Create Event
+                    </button>
+                </form>
+            </div>
+
+            <!-- Dashboard Tab -->
+            <div class="tab-content" id="tab-dashboard">
+                <h2>Event Organizer Dashboard</h2>
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <h3>Total Events</h3>
+                        <div class="dashboard-number" id="statsEvents">0</div>
+                        <div class="dashboard-label">Events Created</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Total Registrations</h3>
+                        <div class="dashboard-number" id="statsRegistrations">0</div>
+                        <div class="dashboard-label">People Registered</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>This Month</h3>
+                        <div class="dashboard-number" id="statsMonthly">0</div>
+                        <div class="dashboard-label">Events This Month</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Revenue</h3>
+                        <div class="dashboard-number">GHS <span id="statsRevenue">0</span></div>
+                        <div class="dashboard-label">Total Earnings</div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Recent Events</h3>
+                    <div id="recentEventsContainer">
+                        <p class="text-secondary">No events created yet. <a href="#" onclick="switchTab('create')" class="text-primary">Create your first event</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event Details Modal -->
+    <div class="modal" id="eventDetailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Event Details</h3>
+                <button class="modal-close" onclick="closeModal('eventDetailsModal')">&times;</button>
+            </div>
+            <div id="eventDetailsContent">
+                <!-- Event details will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Registration Modal -->
+    <div class="modal" id="registrationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Event Registration</h3>
+                <button class="modal-close" onclick="closeModal('registrationModal')">&times;</button>
+            </div>
+            <form onsubmit="processRegistration(event)">
+                <div class="form-group">
+                    <label class="form-label" for="regFullName">Full Name *</label>
+                    <input type="text" id="regFullName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="regPhone">Phone Number *</label>
+                    <input type="tel" id="regPhone" class="form-control" required 
+                           placeholder="0XX XXX XXXX" pattern="0[0-9]{9}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="regEmail">Email Address (Optional)</label>
+                    <input type="email" id="regEmail" class="form-control">
+                </div>
+                
+                <div class="ticket-info">
+                    <h4>Registration Summary</h4>
+                    <div id="registrationSummary">
+                        <!-- Registration details will be populated here -->
+                    </div>
+                </div>
+                
+                <div class="form-group" id="paymentSection">
+                    <label class="form-label">Payment Method</label>
+                    <div class="payment-grid">
+                        <div class="payment-option" onclick="selectPaymentMethod('mtn')" data-method="mtn">
+                            <div class="payment-logo">📱</div>
+                            <strong>MTN MoMo</strong>
+                        </div>
+                        <div class="payment-option" onclick="selectPaymentMethod('vodafone')" data-method="vodafone">
+                            <div class="payment-logo">💳</div>
+                            <strong>Vodafone Cash</strong>
+                        </div>
+                        <div class="payment-option" onclick="selectPaymentMethod('airteltigo')" data-method="airteltigo">
+                            <div class="payment-logo">💰</div>
+                            <strong>AirtelTigo</strong>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary w-full">
+                    Complete Registration
